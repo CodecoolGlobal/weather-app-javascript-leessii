@@ -1,0 +1,154 @@
+@import url(https://fonts.googleapis.com/css?family=Poiret+One);
+/*  @import url(https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css); */
+
+/* general */
+
+body {
+    background-color: #A64253;
+    font-family: Poiret One;
+}
+
+/* widget */
+
+.widget {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-wrap: wrap;
+    height: 400px;
+    width: 600px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* weather data */
+
+.weather {
+    color: aliceblue;
+    height: 40%;
+    width: 50%;
+}
+
+.data {
+    background-color: rgb(0, 0, 0); 
+    width: 70%;
+    display: flex;
+}
+
+.left {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px #ffffff solid;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.right {
+    display: grid;
+    width: 70%;
+    margin: 1rem;
+    grid-template-columns: repeat(3, auto);
+    grid-template-rows: repeat(2, auto);
+    font-size: small;
+    justify-content: space-around;
+    gap: 0.5rem;
+
+}
+
+.info-group{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.lable {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.value-sub-info {
+    font-size: 0.6rem;
+}
+
+.temperature {
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 40px;
+}
+
+/* date */
+
+.date {
+    background-color: #70C1B3; 
+    width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.local-time {
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.5rem;
+}
+
+/* input */
+
+.input-section {
+    height: 60%;
+    width: 100%;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.input {
+    background-color: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+} 
+
+.city-input{
+    background-color: #ffffff5b;
+    color: aliceblue;
+    border: 1px;
+    border-radius: 5px;
+    border-color: aliceblue;
+    height: 25px;
+    width: 200px;
+    box-shadow: 0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15);
+}
+
+::placeholder { 
+    color: rgb(255, 255, 255);
+}
+
+.location {
+    color: white;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-size: medium;
+}
+
+.text {
+    text-transform: uppercase;
+    font-weight: bolder;
+    font-size: larger;
+}
