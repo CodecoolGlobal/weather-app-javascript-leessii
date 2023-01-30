@@ -52,8 +52,9 @@ rootElement.insertAdjacentHTML("beforeend",
         `<span id="cur-condition">Partly cloudy</span>` +
     `</div>`+
     `<div class="input">`+
-        `<input placeholder="Search..." list="city-list" class="city-input"></input>` +
-        `<datalist id="city-list"></datalist>` +
+            `<input placeholder="Search..." list="city-list" class="city-input"></input>` +
+            `<button type="submit" class="search"><i class="fa-solid fa-magnifying-glass"></i></button>` +
+            `<datalist id="city-list"></datalist>` +
     `</div>`+
 `</div>`+
 `</article>`);
@@ -64,33 +65,38 @@ const loadEvent = function() {
     setWeatherForecast("vienna");
 
     let input = document.querySelector(".city-input");
-    input.addEventListener("input", e => {
-        let val = e.target.value;
+    let dataListElement = document.getElementById("city-list");
 
-        if (true == true) {// ce v datalistu obstaja to)
-            setWeatherForecast(val);
+    input.addEventListener("input", e => {
+        let val = e.target.value
+
+        // clear options
+        if (val.length < 3) {
+            dataListElement.innerHTML = "";
         }
 
         // autocomplete 3 Letters
         if (val.length >= 3) {  
-            // get cities           
-            fetch(`http://api.weatherapi.com/v1/search.json?key=70d9089949764be5abe204549232601&q=${e.target.value}`)
-                .then((response) => response.json())
-                .then((data) => {
-
-                    // get options
-                    let dataListElement = document.getElementById("city-list");
-                    dataListElement.innerHTML = "";
-                    console.log(data);
-
-                    for(var i=0; i<data.length; i++) {
-                        dataListElement.insertAdjacentHTML('beforeEnd', `<option value="${data[i].name}"/>`);
-                    }
-            });
+             // search cities  
+             let options = Object.keys(cities).filter((key) => key.toLowerCase().startsWith(e.target.value.toLowerCase()));
+            
+            for (let option of options) {
+                // load option
+                if (!dataListElement.innerHTML.includes(option)) {
+                    dataListElement.insertAdjacentHTML('beforeEnd', `<option value="${option}"/>`);
+                }
+            }  
         } 
     });
+
+    // search
+    let searchButton = document.querySelector(".search");
+    searchButton.addEventListener("click", () => {
+        setWeatherForecast(document.querySelector(".city-input").value);
+    })
 };
 
+// get data
 const setWeatherForecast = (city) => {
     fetch(`https://api.weatherapi.com/v1/current.json?key=70d9089949764be5abe204549232601&q=${city}&aqi=yes`)
         .then((response) => response.json())
