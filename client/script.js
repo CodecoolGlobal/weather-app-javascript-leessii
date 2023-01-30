@@ -77,8 +77,8 @@ const loadEvent = function() {
 
         // autocomplete 3 Letters
         if (val.length >= 3) {  
-             // search cities  
-             let options = Object.keys(cities).filter((key) => key.toLowerCase().startsWith(e.target.value.toLowerCase()));
+            // search cities  
+            let options = Object.keys(cities).filter((key) => key.toLowerCase().startsWith(e.target.value.toLowerCase()));
             
             for (let option of options) {
                 // load option
