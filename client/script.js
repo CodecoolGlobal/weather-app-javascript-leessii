@@ -11,11 +11,11 @@ rootElement.insertAdjacentHTML("beforeend",
     `<div class="right">` +
         `<div class="info-group">` +
             `<div class="lable">Cloudy</div>` +
-            `<span id="data-current-clo">100<span class="value-sub-info">&#37</span></span>` +
+            `<span id="data-current-clo">100&#37</span>` +
         `</div>`+
         `<div class="info-group">` +
             `<div class="lable">Wind</div>` +
-            `<span id="data-current-wind">9<span class="value-sub-info">kph</span></span>` +
+            `<span id="data-current-wind">9kph</span>` +
         `</div>`+
         `<div class="info-group">` +
         `<div class="lable">Direction</div>` +
@@ -23,15 +23,15 @@ rootElement.insertAdjacentHTML("beforeend",
         `</div>`+
         `<div class="info-group">` +
         `<div class="lable">Humidity</div>` +
-        `<span id="data-current-hum">70<span class="value-sub-info">&#37</span></span>` +
+        `<span id="data-current-hum">70&#37</span>` +
         `</div>`+
         `<div class="info-group">` +
         `<div class="lable">Pressure</div>` +
-        `<span id="data-current-pres">30.45<span class="value-sub-info">in</span></span>` +
+        `<span id="data-current-pres">30.45in</span>` +
         `</div>`+
         `<div class="info-group">` +
         `<div class="lable">Air</div>` +
-        `<span id="data-current-air">277.0<span class="value-sub-info">co</span></span>` +
+        `<span id="data-current-air">277.0co</span>` +
         `</div>`+
     `</div>`+
 `</div>` +
@@ -61,20 +61,51 @@ rootElement.insertAdjacentHTML("beforeend",
 const loadEvent = function() {
 
     // dummy data
-    fetch(`http://api.weatherapi.com/v1/current.json?key=70d9089949764be5abe204549232601&q=vienna&aqi=yes`)
+    setWeatherForecast("vienna");
+
+    let input = document.querySelector(".city-input");
+    input.addEventListener("input", e => {
+        let val = e.target.value;
+
+        if (true == true) {// ce v datalistu obstaja to)
+            setWeatherForecast(val);
+        }
+
+        // autocomplete 3 Letters
+        if (val.length >= 3) {  
+            // get cities           
+            fetch(`http://api.weatherapi.com/v1/search.json?key=70d9089949764be5abe204549232601&q=${e.target.value}`)
+                .then((response) => response.json())
+                .then((data) => {
+
+                    // get options
+                    let dataListElement = document.getElementById("city-list");
+                    dataListElement.innerHTML = "";
+                    console.log(data);
+
+                    for(var i=0; i<data.length; i++) {
+                        dataListElement.insertAdjacentHTML('beforeEnd', `<option value="${data[i].name}"/>`);
+                    }
+            });
+        } 
+    });
+};
+
+const setWeatherForecast = (city) => {
+    fetch(`https://api.weatherapi.com/v1/current.json?key=70d9089949764be5abe204549232601&q=${city}&aqi=yes`)
         .then((response) => response.json())
         .then((data) => {
 
-            // weather data 
+            // insert weather data 
             document.getElementById("cur-degree").innerText = data.current["temp_c"];
-            document.getElementById("data-current-clo").textContent = data.current.cloud;
-            document.getElementById("data-current-wind").textContent = data.current["wind_kph"];
+            document.getElementById("data-current-clo").innerHTML = `${data.current.cloud} &#37`;
+            document.getElementById("data-current-wind").innerHTML = `${data.current["wind_kph"]} kph`;
             document.getElementById("data-current-winddir").textContent = data.current["wind_dir"];
-            document.getElementById("data-current-hum").textContent = data.current["humidity"];
-            document.getElementById("data-current-pres").textContent = data.current["pressure_in"].toFixed(2);
-            document.getElementById("data-current-air").textContent = data.current["air_quality"]["co"].toFixed(1);
+            document.getElementById("data-current-hum").textContent = data.current["humidity"] + " %";
+            document.getElementById("data-current-pres").textContent = data.current["pressure_in"].toFixed(2) + " in";
+            document.getElementById("data-current-air").textContent = data.current["air_quality"]["co"].toFixed(1) + " co";
 
-            // date
+            // insert date
             let date = data.location.localtime.split(" ");
             document.getElementById("cur-date").textContent = date[0].replace(/-/g, ".");
             document.getElementById("cur-time").textContent = date[1];
@@ -84,44 +115,10 @@ const loadEvent = function() {
             document.getElementById("img").src = data.current.condition.icon;
             document.getElementById("cur-condition").textContent = data.current.condition.text;
     });
-
-    // autocomplete 3 Letters
-    let input = document.querySelector(".city-input");
-    input.addEventListener("input", (e)=> {
-        if (e.target.value.length === 3) {
-            fetch(`https://api.weatherapi.com/v1/current.json?key=70d9089949764be5abe204549232601&q=${e.target.value}&aqi=yes`)
-                .then((response) => response.json())
-                .then((data) => {
-                    
-                    // get options
-                    let dataListElement = document.getElementById("city-list");
-                    dataListElement.insertAdjacentHTML("beforeend", `<option value="${data.location.name}">`);
-
-                    // insert weather data 
-                    document.getElementById("cur-degree").innerText = data.current["temp_c"];
-                    document.getElementById("data-current-clo").textContent = data.current.cloud;
-                    document.getElementById("data-current-wind").textContent = data.current["wind_kph"];
-                    document.getElementById("data-current-winddir").textContent = data.current["wind_dir"];
-                    document.getElementById("data-current-hum").textContent = data.current["humidity"];
-                    document.getElementById("data-current-pres").textContent = data.current["pressure_in"].toFixed(2);
-                    document.getElementById("data-current-air").textContent = data.current["air_quality"]["co"].toFixed(1);
-
-                    // insert date
-                    let date = data.location.localtime.split(" ");
-                    document.getElementById("cur-date").textContent = date[0].replace(/-/g, ".");
-                    document.getElementById("cur-time").textContent = date[1];
-
-                    // input
-                    document.getElementById("cur-location").textContent = data.location.name;
-                    document.getElementById("img").src = data.current.condition.icon;
-                    document.getElementById("cur-condition").textContent = data.current.condition.text;
-
-            });
-        }
-    });
-};
+}
 
 window.addEventListener("load", loadEvent);
+
 
 
 
