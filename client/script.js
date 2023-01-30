@@ -54,8 +54,8 @@ rootElement.insertAdjacentHTML("beforeend",
     `<div class="input">`+
             `<input placeholder="Search..." list="city-list" class="city-input"></input>` +
             `<button type="submit" class="search"><i class="fa-solid fa-magnifying-glass"></i></button>` +
+            `<div hidden id="spinner"></div>` +
             `<datalist id="city-list"></datalist>` +
-    `</div>`+
 `</div>`+
 `</article>`);
 
@@ -92,35 +92,49 @@ const loadEvent = function() {
     // search
     let searchButton = document.querySelector(".search");
     searchButton.addEventListener("click", () => {
+
+        // spinner for loading
+        spinner.removeAttribute('hidden');
+        fetch('https://www.mocky.io/v2/5185415ba171ea3a00704eed?mocky-delay=500ms')
+            .then(response => response.json())
+            .then(data => {
+
+        spinner.setAttribute('hidden', '');
         setWeatherForecast(document.querySelector(".city-input").value);
+        });
     })
 };
 
 // get data
 const setWeatherForecast = (city) => {
-    fetch(`https://api.weatherapi.com/v1/current.json?key=70d9089949764be5abe204549232601&q=${city}&aqi=yes`)
-        .then((response) => response.json())
-        .then((data) => {
+        fetch(`https://api.weatherapi.com/v1/current.json?key=70d9089949764be5abe204549232601&q=${city}&aqi=yes`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    document.getElementById("cur-condition").innerText = "Ups...we can not find this country";
+                }})
+            .then((data) => {
 
-            // insert weather data 
-            document.getElementById("cur-degree").innerText = data.current["temp_c"];
-            document.getElementById("data-current-clo").innerHTML = `${data.current.cloud} &#37`;
-            document.getElementById("data-current-wind").innerHTML = `${data.current["wind_kph"]} kph`;
-            document.getElementById("data-current-winddir").textContent = data.current["wind_dir"];
-            document.getElementById("data-current-hum").textContent = data.current["humidity"] + " %";
-            document.getElementById("data-current-pres").textContent = data.current["pressure_in"].toFixed(2) + " in";
-            document.getElementById("data-current-air").textContent = data.current["air_quality"]["co"].toFixed(1) + " co";
+                // insert weather data 
+                document.getElementById("cur-degree").innerText = data.current["temp_c"];
+                document.getElementById("data-current-clo").innerHTML = `${data.current.cloud} &#37`;
+                document.getElementById("data-current-wind").innerHTML = `${data.current["wind_kph"]} kph`;
+                document.getElementById("data-current-winddir").textContent = data.current["wind_dir"];
+                document.getElementById("data-current-hum").textContent = data.current["humidity"] + " %";
+                document.getElementById("data-current-pres").textContent = data.current["pressure_in"].toFixed(2) + " in";
+                document.getElementById("data-current-air").textContent = data.current["air_quality"]["co"].toFixed(1) + " co";
 
-            // insert date
-            let date = data.location.localtime.split(" ");
-            document.getElementById("cur-date").textContent = date[0].replace(/-/g, ".");
-            document.getElementById("cur-time").textContent = date[1];
+                // insert date
+                let date = data.location.localtime.split(" ");
+                document.getElementById("cur-date").textContent = date[0].replace(/-/g, ".");
+                document.getElementById("cur-time").textContent = date[1];
 
-            // input
-            document.getElementById("cur-location").textContent = data.location.name;
-            document.getElementById("img").src = data.current.condition.icon;
-            document.getElementById("cur-condition").textContent = data.current.condition.text;
-    });
+                // input
+                document.getElementById("cur-location").textContent = data.location.name;
+                document.getElementById("img").src = data.current.condition.icon;
+                document.getElementById("cur-condition").textContent = data.current.condition.text;
+        });
 }
 
 window.addEventListener("load", loadEvent);
